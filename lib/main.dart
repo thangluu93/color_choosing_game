@@ -115,13 +115,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onColorPressed(int index) {
+    if (_level == 1) {
+      _setTimer();
+    }
     if (!_gameOver && index == _diffIndex) {
-      if (_level == 1) {
-        _setTimer();
-      }
       _updateData();
       setState(() {
         _level = _level + 1;
+        _seconds = _seconds + 1;
+      });
+    } else {
+      setState(() {
+        _seconds = _seconds - 3;
       });
     }
   }
