@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:color_game/widget/dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,11 +32,11 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _gameOver = false;
 
   int _seconds = 60;
-  int _level = 1;
-  int _bestLevel = 1;
+  int _score = 1;
+  int _bestScore = 1;
 
   int _crossAxisCount = 3;
-
+  bool _pressRestart = false;
   int _diffIndex;
   Color _diffColor;
   Color _color;
@@ -48,20 +49,20 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _updateData() async {
-    final crossAxisCount = math.min(10, ((_level + 5) / 2).floor());
+    final crossAxisCount = math.min(10, ((_score + 5) / 2).floor());
 
     final rand = math.Random();
     final diffIndex = rand.nextInt(crossAxisCount * crossAxisCount);
     final color = Color((math.Random().nextDouble() * 0xFFFFFF).toInt() << 0)
         .withOpacity(1);
-    final diffColor = color.withOpacity(math.min(0.95, 0.5 + _level / 100));
+    final diffColor = color.withOpacity(math.min(0.95, 0.5 + _score / 100));
 
     var prefs = await SharedPreferences.getInstance();
-    var bestLevel = prefs.getInt('BEST') ?? 1;
+    var bestScore = prefs.getInt('BEST') ?? 1;
 
-    if (bestLevel < _level) {
-      await prefs.setInt('BEST', _level);
-      bestLevel = _level;
+    if (bestScore < _score) {
+      await prefs.setInt('BEST', _score);
+      bestScore = _score;
     }
 
     setState(() {
@@ -69,24 +70,37 @@ class _MyHomePageState extends State<MyHomePage> {
       _color = color;
       _diffColor = diffColor;
       _crossAxisCount = crossAxisCount;
-      _bestLevel = bestLevel;
-    });
-  }
-
-  void _setGameOver() {
-    setState(() {
-      _seconds = 0;
-      _gameOver = true;
+      _bestScore = bestScore;
     });
   }
 
   void _restart() {
     setState(() {
       _gameOver = false;
-      _level = 1;
+      _score = 1;
       _seconds = 60;
     });
 
+    _updateData();
+  }
+
+  void _onRestartPress() {
+    _restart();
+    // _gameOver = true;
+    _pressRestart = true;
+  }
+
+  void _setGameOver() {
+    if (!_pressRestart) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => CustomDialog(
+         score: _score,
+        ),
+      );
+    }
+    _restart();
+    // _gameOver = true;
     _updateData();
   }
 
@@ -94,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
     Timer.periodic(
       Duration(seconds: 1),
       (Timer t) {
-        if (_seconds <= 0) {
+        if (_seconds <= 0 || _pressRestart) {
           t.cancel();
           _setGameOver();
         } else {
@@ -106,28 +120,26 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _onTimePressed() {
-    if (_gameOver) {
-      _restart();
-    } else {
-      _setGameOver();
-    }
-  }
-
   void _onColorPressed(int index) {
-    if (_level == 1) {
+    if (_score == 1 && _seconds == 60) {
+      _gameOver = false;
+      _pressRestart=false;
       _setTimer();
     }
-    if (!_gameOver && index == _diffIndex) {
-      _updateData();
-      setState(() {
-        _level = _level + 1;
-        _seconds = _seconds + 1;
-      });
-    } else {
-      setState(() {
-        _seconds = _seconds - 3;
-      });
+    if (!_gameOver) {
+      if (index == _diffIndex) {
+        _updateData();
+        setState(() {
+          _score = _score + 1;
+          _seconds = _seconds + 1;
+        });
+      } else {
+        if (_seconds >= 3) {
+          setState(() {
+            _seconds = _seconds - 3;
+          });
+        }
+      }
     }
   }
 
@@ -141,10 +153,10 @@ class _MyHomePageState extends State<MyHomePage> {
         children: <Widget>[
           Flexible(
             child: InkWell(
-              onTap: _onTimePressed,
+              // onTap: _onTimePressed,
               child: Container(
-                height: 80,
-                margin: EdgeInsets.symmetric(horizontal: 8),
+                height: 70,
+                margin: EdgeInsets.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: Theme.of(context).accentColor,
                   borderRadius: BorderRadius.all(
@@ -152,26 +164,20 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 alignment: Alignment.center,
-                child: _gameOver
-                    ? Icon(
-                        Icons.refresh,
-                        color: Colors.white,
-                        size: 36,
-                      )
-                    : Text(
-                        _seconds.toString(),
-                        style: TextStyle(
-                          fontSize: 40,
-                          color: Colors.white,
-                        ),
-                      ),
+                child: Text(
+                  _seconds.toString(),
+                  style: TextStyle(
+                    fontSize: 40,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ),
           Flexible(
             flex: 2,
             child: Container(
-              height: 80,
+              height: 70,
               margin: EdgeInsets.symmetric(horizontal: 8),
               padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
@@ -189,7 +195,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Text(
-                            'LEVEL',
+                            'SCORE',
                             style: TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
@@ -197,7 +203,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                           Text(
-                            _level.toString(),
+                            _score.toString(),
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.white,
@@ -222,7 +228,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                           Text(
-                            _bestLevel.toString(),
+                            _bestScore.toString(),
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.white,
@@ -246,7 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
       height: MediaQuery.of(context).size.width,
       child: GridView.count(
         physics: ScrollPhysics(),
-        padding: EdgeInsets.all(2),
+        padding: EdgeInsets.all(15),
         crossAxisCount: _crossAxisCount,
         children: List.generate(
           _crossAxisCount * _crossAxisCount,
@@ -277,16 +283,46 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: PreferredSize(
+        child: AppBar(
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.settings,
+                color: Colors.black,
+                size: 30,
+              ),
+              onPressed: () {},
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.refresh,
+                color: Colors.black,
+                size: 30,
+              ),
+              onPressed: _onRestartPress,
+            )
+          ],
+          title: Center(
+            child: Text(
+              'BEST: $_bestScore',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+        ),
+        preferredSize: Size.fromHeight(70),
+      ),
       body: SafeArea(
         child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                _buildToolbar(),
-                _buildSquare(),
-              ],
-            ),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              _buildToolbar(),
+              _buildSquare(),
+            ],
           ),
         ),
       ),
