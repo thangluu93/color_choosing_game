@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'package:color_game/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:color_game/widget/dialog.dart';
+import 'package:color_game/widget/app_bar.dart';
 
 class GamePage extends StatefulWidget {
   GamePage({Key key}) : super(key: key);
 
+
   @override
-  _GamePageState createState() => _GamePageState();
+  State<StatefulWidget> createState() => _GamePageState();
 }
 
 class _GamePageState extends State<GamePage> {
@@ -33,12 +36,14 @@ class _GamePageState extends State<GamePage> {
     _updateData();
   }
 
+  
+
   void _updateData() async {
     final crossAxisCount = math.min(4, ((_score + 5) / 2).floor());
 
     final rand = math.Random();
     final diffIndex = rand.nextInt(crossAxisCount * crossAxisCount);
-    final color = Color((math.Random().nextDouble() * 0xFFFFFF).toInt() << 0)
+    final color = Color((math.Random().nextDouble() * 0xFFFFFFFF).toInt() << 0)
         .withOpacity(1);
     final diffColor = color.withOpacity(math.min(0.95, 0.6 + _score / 100));
 
@@ -57,6 +62,7 @@ class _GamePageState extends State<GamePage> {
       _crossAxisCount = crossAxisCount;
       _bestScore = bestScore;
     });
+    new User(bestScore: _bestScore);
   }
 
   void _restart() {
@@ -75,9 +81,9 @@ class _GamePageState extends State<GamePage> {
     _pressRestart = true;
   }
 
-  void _setGameOver() {
+  void _setGameOver() async {
     if (!_pressRestart) {
-      showDialog(
+      await showDialog(
         context: context,
         builder: (BuildContext context) => CustomDialog(
           score: _score,
@@ -89,8 +95,8 @@ class _GamePageState extends State<GamePage> {
     _updateData();
   }
 
-  Timer _setTimer() {
-    Timer timer=     Timer.periodic(
+  void _setTimer() {
+    Timer.periodic(
       Duration(seconds: 1),
       (Timer t) {
         if (_seconds <= 0 || _pressRestart) {
@@ -103,13 +109,10 @@ class _GamePageState extends State<GamePage> {
         }
       },
     );
-    return timer;
   }
 
- 
-
   void _onColorPressed(int index) {
-    if (_score == 1 && _seconds == 60) {
+    if (_score == 1 && _seconds == 30) {
       _gameOver = false;
       _pressRestart = false;
       _setTimer();
@@ -130,6 +133,8 @@ class _GamePageState extends State<GamePage> {
       }
     }
   }
+
+  
 
   Widget _buildToolbar() {
     return Container(
@@ -153,8 +158,7 @@ class _GamePageState extends State<GamePage> {
                 ),
                 alignment: Alignment.center,
                 child: Text(
-                 _seconds.toString(),
-            
+                  _seconds.toString(),
                   style: TextStyle(
                     fontSize: 40,
                     color: Colors.white,
@@ -272,39 +276,7 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        child: AppBar(
-          centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.settings,
-                color: Colors.white,
-                size: 30,
-              ),
-              onPressed: () {},
-            ),
-            IconButton(
-              icon: Icon(
-                Icons.refresh,
-                color: Colors.white,
-                size: 30,
-              ),
-              onPressed: _onRestartPress,
-            )
-          ],
-          title: Center(
-            child: Text(
-              'BEST: $_bestScore',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-          // backgroundColor: Colors.colorChosing,
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-        ),
-        preferredSize: Size.fromHeight(70),
-      ),
+      appBar: NavBar(bestScore: _bestScore,isInGamePage: true,onPressRestart: _onRestartPress,),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -317,3 +289,5 @@ class _GamePageState extends State<GamePage> {
     );
   }
 }
+
+

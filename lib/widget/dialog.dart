@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomDialog extends StatelessWidget {
-  final score;
+  final int score;
 
   CustomDialog({
     @required this.score,
