@@ -1,5 +1,5 @@
 
-import 'package:color_game/pages/game_page.dart';
+
 import 'package:color_game/pages/home_page.dart';
 import 'package:flutter/material.dart';
 

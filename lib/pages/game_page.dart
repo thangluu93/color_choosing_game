@@ -257,8 +257,10 @@ class _GamePageState extends State<GamePage> {
 
   Widget _buildColorBox(int index) {
     return Padding(
+    
       padding: EdgeInsets.all(2),
       child: RaisedButton(
+        
         color: index != _diffIndex ? _color : _diffColor,
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
