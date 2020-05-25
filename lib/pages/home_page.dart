@@ -11,11 +11,16 @@ class HomePage extends StatelessWidget {
 
   Widget _buildSquare(BuildContext context) {
     return Container(
-      height: 350,
+      height: 300,
       // height: MediaQuery.of(context).size.width,
       child: GridView.count(
         physics: ScrollPhysics(),
-        padding: EdgeInsets.all(75),
+        padding: EdgeInsets.only(
+          bottom: 75,
+          left: 75,
+          right: 75,
+          top: 40,
+        ),
         crossAxisCount: 3,
         children: List.generate(
           3 * 3,
