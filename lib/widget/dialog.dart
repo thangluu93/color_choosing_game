@@ -22,16 +22,15 @@ class CustomDialog extends StatelessWidget {
 
   dialogContent(BuildContext context) {
     var text = Text(
-                  'Better luck next time!!!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16.0,
-                  ),
-                );
+      'Better luck next time!!!',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 16.0,
+      ),
+    );
     return Center(
       child: Stack(
         children: <Widget>[
-
           Container(
             padding: EdgeInsets.only(
               top: Consts.avatarRadius + Consts.padding,
@@ -66,18 +65,19 @@ class CustomDialog extends StatelessWidget {
                 text,
                 SizedBox(height: 24.0),
                 Align(
-                  alignment: Alignment.bottomRight,
-                  child: FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // To close the dialog
+                  alignment: Alignment.center,
+                  child: GestureDetector(
+                    child: Icon(Icons.refresh,
+                    size: 50,),
+                    onTap: () {
+                      Navigator.of(context).pop();
                     },
-                    child: Text('video'),
                   ),
                 ),
               ],
             ),
           ),
-                    Positioned(
+          Positioned(
             left: Consts.padding,
             right: Consts.padding,
             child: CircleAvatar(
