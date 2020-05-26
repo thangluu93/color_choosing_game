@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.indigo,
         brightness: Brightness.light,
         // backgroundColor: Colors.colorChosing,
-        scaffoldBackgroundColor: Colors.colorChosing,
+        scaffoldBackgroundColor: Color(0xFF292234),
       ),
       home: HomePage(),
     );

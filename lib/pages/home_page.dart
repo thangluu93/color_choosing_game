@@ -1,18 +1,21 @@
 // import 'dart:js';
+import 'package:firebase_admob/firebase_admob.dart';
 
-import 'package:color_game/models/user.dart';
 import 'package:color_game/pages/game_page.dart';
 import 'package:color_game/widget/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
+
+
+  
   //  final int bestScore;
   // User user;
 
   Widget _buildSquare(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height/17),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height / 17),
         // height: 300,
         // height: MediaQuery.of(context).size.width-70,
         height: 250,
@@ -130,6 +133,7 @@ class HomePage extends StatelessWidget {
             ),
             _buildSquare(context),
             _playButton(context),
+         
           ],
         ),
       ),
