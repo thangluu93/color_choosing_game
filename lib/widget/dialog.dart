@@ -22,7 +22,7 @@ class CustomDialog extends StatelessWidget {
 
   dialogContent(BuildContext context) {
     var text = Text(
-                  'Watch video for more 30s',
+                  'Better luck next time!!!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16.0,
@@ -56,7 +56,7 @@ class CustomDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min, // To make the card compact
               children: <Widget>[
                 Text(
-                  'Your score is $score',
+                  'Your level is $score',
                   style: TextStyle(
                     fontSize: 24.0,
                     fontWeight: FontWeight.w700,

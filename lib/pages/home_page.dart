@@ -1,6 +1,7 @@
 // import 'dart:js';
 
 import 'package:color_game/models/user.dart';
+import 'package:color_game/pages/game_page.dart';
 import 'package:color_game/widget/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,11 +12,11 @@ class HomePage extends StatelessWidget {
 
   Widget _buildSquare(BuildContext context) {
     return Container(
-        margin: EdgeInsets.only(top: 50),
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height/17),
         // height: 300,
         // height: MediaQuery.of(context).size.width-70,
         height: 250,
-        width: 320,
+        width: 310,
         // width: MediaQuery.of(context).size.width-70,
         child: Center(
           child: Column(
@@ -71,12 +72,42 @@ class HomePage extends StatelessWidget {
 
       child: Container(
         width: MediaQuery.of(context).size.width / 4,
+        // height: MediaQuery.of(context).size.width / 4,
         decoration: BoxDecoration(
           color: index == 4 ? Colors.red : Colors.white,
           shape: BoxShape.circle,
         ),
       ),
       // constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height),
+    );
+  }
+
+  Widget _playButton(BuildContext context) {
+    return GestureDetector(
+      child: Container(
+        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height / 20),
+        height: MediaQuery.of(context).size.height / 11,
+        width: MediaQuery.of(context).size.width / 1.2,
+        child: Center(
+          child: Text(
+            'PLAY GAME',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        decoration: BoxDecoration(
+          border: Border.all(width: 2, color: Colors.white),
+          borderRadius: BorderRadius.all(
+              Radius.circular(MediaQuery.of(context).size.width / 10)),
+        ),
+      ),
+      onTap: () {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => GamePage()));
+      },
     );
   }
 
@@ -98,6 +129,7 @@ class HomePage extends StatelessWidget {
               style: TextStyle(color: Colors.white, fontSize: 42),
             ),
             _buildSquare(context),
+            _playButton(context),
           ],
         ),
       ),
