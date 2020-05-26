@@ -5,16 +5,37 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:color_game/widget/dialog.dart';
 import 'package:color_game/widget/app_bar.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 
 class GamePage extends StatefulWidget {
   GamePage({Key key}) : super(key: key);
-
 
   @override
   State<StatefulWidget> createState() => _GamePageState();
 }
 
+const String testDevice = 'YOUR_DEVICE_ID';
+
 class _GamePageState extends State<GamePage> {
+  MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['flutterio', 'beautiful apps'],
+    contentUrl: 'https://flutter.io',
+    childDirected: false,
+    testDevices: testDevice != null ? <String>[testDevice] : null,
+  );
+  // FirebaseAdMob.instance.initialize(appId: appId);
+  BannerAd createBannerAd() {
+    return BannerAd(
+      adUnitId: BannerAd.testAdUnitId,
+      size: AdSize.banner,
+      targetingInfo: targetingInfo,
+      listener: (MobileAdEvent event) {
+        print("BannerAd event $event");
+      },
+    );
+  }
+
+  BannerAd _bannerAd;
   bool _gameOver = false;
 
   int _seconds = 30;
@@ -32,11 +53,17 @@ class _GamePageState extends State<GamePage> {
   @override
   void initState() {
     super.initState();
+    FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
 
     _updateData();
   }
 
-  
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+
+    super.dispose();
+  }
 
   void _updateData() async {
     final crossAxisCount = math.min(4, ((_score + 5) / 2).floor());
@@ -54,6 +81,11 @@ class _GamePageState extends State<GamePage> {
       await prefs.setInt('BEST', _score);
       bestScore = _score;
     }
+    _bannerAd = createBannerAd()..load();
+    _bannerAd ??= createBannerAd();
+    _bannerAd
+      ..load()
+      ..show();
 
     setState(() {
       _diffIndex = diffIndex;
@@ -133,8 +165,6 @@ class _GamePageState extends State<GamePage> {
       }
     }
   }
-
-  
 
   Widget _buildToolbar() {
     return Container(
@@ -257,10 +287,8 @@ class _GamePageState extends State<GamePage> {
 
   Widget _buildColorBox(int index) {
     return Padding(
-    
       padding: EdgeInsets.all(2),
       child: RaisedButton(
-        
         color: index != _diffIndex ? _color : _diffColor,
         padding: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
@@ -278,7 +306,11 @@ class _GamePageState extends State<GamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: NavBar(bestScore: _bestScore,isInGamePage: true,onPressRestart: _onRestartPress,),
+      appBar: NavBar(
+        bestScore: _bestScore,
+        isInGamePage: true,
+        onPressRestart: _onRestartPress,
+      ),
       body: Center(
         child: Column(
           mainAxisSize: MainAxisSize.max,
@@ -291,5 +323,3 @@ class _GamePageState extends State<GamePage> {
     );
   }
 }
-
-

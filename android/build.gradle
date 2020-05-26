@@ -8,6 +8,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.google.gms:google-services:4.3.3'
     }
 }
 
@@ -17,7 +18,8 @@ allprojects {
         jcenter()
     }
 }
-
+apply plugin: 'com.google.gms.google-services'
+// implementation 'com.google.firebase:firebase-analytics:17.4.2'
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
