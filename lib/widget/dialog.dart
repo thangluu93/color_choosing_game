@@ -17,7 +17,7 @@ int score1;
 
   InterstitialAd createInterstitialAd() {
     return InterstitialAd(
-      adUnitId: InterstitialAd.testAdUnitId,
+      adUnitId: 'ca-app-pub-9186350757856519/2412696416',
       listener: (MobileAdEvent event) {
         print("InterstitialAd event $event");
       },

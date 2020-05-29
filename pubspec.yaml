@@ -26,6 +26,7 @@ dependencies:
   firebase_admob: ^0.9.3+2
   shared_preferences: ^0.5.7+1
   flutter_launcher_icons: ^0.7.5
+  assets_audio_player: ^1.6.4
   flutter:
     sdk: flutter
 
@@ -49,6 +50,7 @@ flutter:
   assets:
     - assets/gift.gif
     - assets/homepage_gif.gif
+    - assets/music.mp3
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

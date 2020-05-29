@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
+    FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-9186350757856519/5566501033');
     _bannerAd = createBannerAd()..load();
     _bannerAd ??= createBannerAd();
     _bannerAd

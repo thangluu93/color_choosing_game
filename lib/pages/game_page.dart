@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math' as math;
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:color_game/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,6 +18,7 @@ class GamePage extends StatefulWidget {
 const String testDevice = 'YOUR_DEVICE_ID';
 
 class _GamePageState extends State<GamePage> {
+    AssetsAudioPlayer _assetsAudioPlayer;
   MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
     keywords: <String>['flutterio', 'beautiful apps'],
     contentUrl: 'https://flutter.io',
@@ -53,9 +55,10 @@ class _GamePageState extends State<GamePage> {
   @override
   void initState() {
     super.initState();
-    FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
-
-    _updateData();
+    FirebaseAdMob.instance.initialize(appId: 'ca-app-pub-9186350757856519/5566501033');
+    _assetsAudioPlayer = AssetsAudioPlayer();
+    _assetsAudioPlayer.open(Audio("assets/music.mp3"));
+    _assetsAudioPlayer.playOrPause();
   }
 
   @override
@@ -81,11 +84,11 @@ class _GamePageState extends State<GamePage> {
       await prefs.setInt('BEST', _score);
       bestScore = _score;
     }
-    // _bannerAd = createBannerAd()..load();
-    // _bannerAd ??= createBannerAd();
-    // _bannerAd
-    //   ..load()
-    //   ..show();
+    _bannerAd = createBannerAd()..load();
+    _bannerAd ??= createBannerAd();
+    _bannerAd
+      ..load()
+      ..show();
 
     setState(() {
       _diffIndex = diffIndex;
@@ -129,7 +132,6 @@ class _GamePageState extends State<GamePage> {
     _restart();
     // _gameOver = true;
     _updateData();
-
   }
 
   void _setTimer() {
