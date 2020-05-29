@@ -1,15 +1,59 @@
 // import 'dart:js';
 
-
 import 'package:color_game/pages/game_page.dart';
 import 'package:color_game/widget/app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  // _HomePageState({Key key}) : super(key: key);
 
+  @override
+  State<StatefulWidget> createState() => _HomePageState();
+}
 
-  
+const String testDevice = 'YOUR_DEVICE_ID';
+
+class _HomePageState extends State<HomePage> {
+  BannerAd _bannerAd;
+
+  MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+    keywords: <String>['flutterio', 'beautiful apps'],
+    contentUrl: 'https://flutter.io',
+    childDirected: false,
+    testDevices: testDevice != null ? <String>[testDevice] : null,
+  );
+  // FirebaseAdMob.instance.initialize(appId: appId);
+  BannerAd createBannerAd() {
+    return BannerAd(
+      adUnitId: BannerAd.testAdUnitId,
+      size: AdSize.banner,
+      targetingInfo: targetingInfo,
+      listener: (MobileAdEvent event) {
+        print("BannerAd event $event");
+      },
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    FirebaseAdMob.instance.initialize(appId: FirebaseAdMob.testAppId);
+    _bannerAd = createBannerAd()..load();
+    _bannerAd ??= createBannerAd();
+    _bannerAd
+      ..load()
+      ..show();
+  }
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+
+    super.dispose();
+  }
+
   //  final int bestScore;
   // User user;
 
@@ -110,6 +154,8 @@ class HomePage extends StatelessWidget {
       onTap: () {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => GamePage()));
+        _bannerAd?.dispose();
+        _bannerAd = null;
       },
     );
   }
@@ -133,7 +179,6 @@ class HomePage extends StatelessWidget {
             ),
             _buildSquare(context),
             _playButton(context),
-         
           ],
         ),
       ),

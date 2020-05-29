@@ -7,7 +7,7 @@
   <application android:name="io.flutter.app.FlutterApplication" android:label="color_game" android:icon="@mipmap/ic_launcher">
     <meta-data
     android:name="com.google.android.gms.ads.APPLICATION_ID"
-    android:value="ca-app-pub-9186350757856519~3396834970"/>
+    android:value="ca-app-pub-9688539651329341~7565661187"/>
     <activity android:name=".MainActivity" android:launchMode="singleTop" android:theme="@style/LaunchTheme" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize">
       <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user

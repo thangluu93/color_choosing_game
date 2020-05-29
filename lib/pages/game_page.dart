@@ -38,7 +38,7 @@ class _GamePageState extends State<GamePage> {
   BannerAd _bannerAd;
   bool _gameOver = false;
 
-  int _seconds = 30;
+  int _seconds = 20;
   int _score = 1;
   int _bestScore = 1;
 
@@ -81,11 +81,11 @@ class _GamePageState extends State<GamePage> {
       await prefs.setInt('BEST', _score);
       bestScore = _score;
     }
-    _bannerAd = createBannerAd()..load();
-    _bannerAd ??= createBannerAd();
-    _bannerAd
-      ..load()
-      ..show();
+    // _bannerAd = createBannerAd()..load();
+    // _bannerAd ??= createBannerAd();
+    // _bannerAd
+    //   ..load()
+    //   ..show();
 
     setState(() {
       _diffIndex = diffIndex;
@@ -101,16 +101,20 @@ class _GamePageState extends State<GamePage> {
     setState(() {
       _gameOver = false;
       _score = 1;
-      _seconds = 30;
+      _seconds = 20;
     });
 
     _updateData();
+    _bannerAd?.dispose();
+    _bannerAd = null;
   }
 
   void _onRestartPress() {
     _restart();
     // _gameOver = true;
     _pressRestart = true;
+    _bannerAd?.dispose();
+    _bannerAd = null;
   }
 
   void _setGameOver() async {
@@ -125,6 +129,7 @@ class _GamePageState extends State<GamePage> {
     _restart();
     // _gameOver = true;
     _updateData();
+
   }
 
   void _setTimer() {
@@ -144,7 +149,7 @@ class _GamePageState extends State<GamePage> {
   }
 
   void _onColorPressed(int index) {
-    if (_score == 1 && _seconds == 30) {
+    if (_score == 1 && _seconds == 20) {
       _gameOver = false;
       _pressRestart = false;
       _setTimer();

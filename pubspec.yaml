@@ -25,6 +25,7 @@ dependencies:
   provider: ^4.0.4
   firebase_admob: ^0.9.3+2
   shared_preferences: ^0.5.7+1
+  flutter_launcher_icons: ^0.7.5
   flutter:
     sdk: flutter
 

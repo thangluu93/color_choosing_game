@@ -1,12 +1,42 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CustomDialog extends StatelessWidget {
+class CustomDialog extends StatefulWidget {
   final int score;
+  CustomDialog(
+   {  this.score,}
+  );
+  @override
+  State<StatefulWidget> createState() => _CustomDialogState();
+}
 
-  CustomDialog({
-    @required this.score,
-  });
+class _CustomDialogState extends State<CustomDialog> {
+int score1;
+  InterstitialAd _interstitialAd;
+
+  InterstitialAd createInterstitialAd() {
+    return InterstitialAd(
+      adUnitId: InterstitialAd.testAdUnitId,
+      listener: (MobileAdEvent event) {
+        print("InterstitialAd event $event");
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _interstitialAd?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    score1=widget.score;
+     _interstitialAd = createInterstitialAd()..load();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +58,14 @@ class CustomDialog extends StatelessWidget {
         fontSize: 16.0,
       ),
     );
+
+    loadAd() async {
+      // _interstitialAd?.dispose();
+     
+     await  _interstitialAd.show().then((value) =>  Navigator.of(context).pop());
+    
+    }
+
     return Center(
       child: Stack(
         children: <Widget>[
@@ -55,7 +93,7 @@ class CustomDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min, // To make the card compact
               children: <Widget>[
                 Text(
-                  'Your level is $score',
+                  'Your level is $score1',
                   style: TextStyle(
                     fontSize: 24.0,
                     fontWeight: FontWeight.w700,
@@ -67,10 +105,13 @@ class CustomDialog extends StatelessWidget {
                 Align(
                   alignment: Alignment.center,
                   child: GestureDetector(
-                    child: Icon(Icons.refresh,
-                    size: 50,),
+                    child: Icon(
+                      Icons.refresh,
+                      size: 50,
+                    ),
                     onTap: () {
-                      Navigator.of(context).pop();
+                      loadAd();
+                      
                     },
                   ),
                 ),
